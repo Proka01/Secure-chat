@@ -1,14 +1,13 @@
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class Server {
+public class ServerMain {
 
     List<String> connected_clients = new ArrayList<>(); //lista ip-adresa konektovanih klijenata
 
-    public Server() throws Exception
+    public ServerMain() throws Exception
     {
         ServerSocket serverSocket = new ServerSocket(2022);
 
@@ -27,7 +26,7 @@ public class Server {
 
     public static void main(String[] args) {
         try {
-            new Server();
+            new ServerMain();
         } catch (Exception e) {
             e.printStackTrace();
         }

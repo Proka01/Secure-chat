@@ -1,13 +1,12 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.Random;
 
 public class ServerThread implements Runnable{
 
     private Socket socket;
-    private Server server;
+    private ServerMain server;
 
-    public ServerThread(Socket socket, Server server) {
+    public ServerThread(Socket socket, ServerMain server) {
         this.socket = socket;
         this.server = server;
     }
