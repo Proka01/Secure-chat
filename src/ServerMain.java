@@ -14,10 +14,12 @@ public class ServerMain {
         while(true)
         {
             Socket socket = serverSocket.accept();
+            connected_clients.add(socket.getInetAddress().getHostAddress());
+
             ServerThread serverThread = new ServerThread(socket,this);
             Thread thread = new Thread(serverThread);
 
-            connected_clients.add(socket.getInetAddress().getHostAddress());
+            System.out.println(socket.getInetAddress().getHostAddress());
 
             thread.start();
         }

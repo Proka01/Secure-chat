@@ -17,6 +17,17 @@ public class Client {
         System.out.println(server_msg.readLine());
         System.out.println(server_msg.readLine());
 
+        String msg;
+        while (true){
+            msg = sc.nextLine();
+            client_msg.println(msg);
+            if(msg.equals("choose")){
+                msg = server_msg.readLine();
+                System.out.println(msg);
+            }
+            else if(msg.equals("end"))break;
+        }
+
         socket.close();
     }
 

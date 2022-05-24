@@ -25,6 +25,19 @@ public class ServerThread implements Runnable{
             server_msg.println("Odaberite nekog od dostupnih klijenata");
             server_msg.println(available_clients);
 
+            String msg;
+            while(true)
+            {
+                msg = client_msg.readLine();
+                if(msg.equals("choose")){
+                    StringBuilder av = new StringBuilder();
+                    for(String str : server.getConnected_clients())
+                        av.append(str).append(";");
+                    server_msg.println(av);
+                }
+                else if(msg.equals("end"))break;
+            }
+
             socket.close();
 
         } catch (IOException e) {
