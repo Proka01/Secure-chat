@@ -51,6 +51,12 @@ public class ServerThread implements Runnable{
             }
 
         }
+        try {
+            this.dos.close();
+            this.dis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Socket getSocket() {
