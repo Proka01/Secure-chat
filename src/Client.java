@@ -5,24 +5,31 @@ import java.util.Scanner;
 
 public class Client {
 
+    private RSA rsa;
+
     public Client() throws Exception
     {
+        rsa = new RSA();
         Scanner sc = new Scanner(System.in);
 
-        InetAddress ip = InetAddress.getByName("localhost");
+        InetAddress ip = InetAddress.getByName("192.168.0.29");
 
         Socket socket = new Socket(ip,2022);
 
         DataInputStream dis = new DataInputStream(socket.getInputStream());
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
+        // client1 -> client2 : start # client2
+        // client2 primi da clint1 hoce da se javi i salje mu e,z
+        // clinet1 racuna crypto_msg -> client2
+        // client2 dekodira
+
         Thread sendMessage = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true)
                 {
-                    String msg = sc.nextLine();
-
+                    String msg = sc.nextLine();  // msg # client(i)
                     try {
                         dos.writeUTF(msg);
                     } catch (IOException e) {
@@ -40,6 +47,9 @@ public class Client {
                     try {
                         String msg = dis.readUTF();
                         System.out.println(msg);
+
+
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -50,26 +60,7 @@ public class Client {
         sendMessage.start();
         readMessage.start();
 
-        /*Socket socket = new Socket("localhost",2022);
-        BufferedReader server_msg = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        PrintWriter client_msg = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println(server_msg.readLine());
-        System.out.println(server_msg.readLine());
-
-        String msg;
-        while (true){
-            msg = sc.nextLine();
-            client_msg.println(msg);
-            if(msg.equals("choose")){
-                msg = server_msg.readLine();
-                System.out.println(msg);
-            }
-            else if(msg.equals("end"))break;
-        }
-
-        socket.close();*/
+        //socket.close();
     }
 
     public static void main(String[] args) {
