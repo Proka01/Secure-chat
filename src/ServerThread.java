@@ -1,48 +1,79 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 public class ServerThread implements Runnable{
 
     private Socket socket;
     private ServerMain server;
+    private String name;
+    private Boolean loggedin;
+    private DataInputStream dis;
+    private DataOutputStream dos;
 
-    public ServerThread(Socket socket, ServerMain server) {
+    public ServerThread(Socket socket, ServerMain server, String name, DataInputStream dis,DataOutputStream dos) {
         this.socket = socket;
         this.server = server;
+        this.name = name;
+        this.dis = dis;
+        this.dos = dos;
+        this.loggedin = true;
     }
 
     @Override
     public void run() {
 
-        try {
-            BufferedReader client_msg = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter server_msg = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
+        String msg;
+        while (true) {
+            try {
+                msg = dis.readUTF();
+                System.out.println(msg);
 
-            String available_clients = "";
-            for(String str : server.getConnected_clients())
-                available_clients += str+"\n";
-
-            server_msg.println("Odaberite nekog od dostupnih klijenata");
-            server_msg.println(available_clients);
-
-            String msg;
-            while(true)
-            {
-                msg = client_msg.readLine();
-                if(msg.equals("choose")){
-                    StringBuilder av = new StringBuilder();
-                    for(String str : server.getConnected_clients())
-                        av.append(str).append(";");
-                    server_msg.println(av);
+                if (msg.equals("logout")) {
+                    loggedin = false;
+                    socket.close();
+                    break;
                 }
-                else if(msg.equals("end"))break;
+
+                StringTokenizer st = new StringTokenizer(msg, "#");
+                String msgToSend = st.nextToken();
+                String rec = st.nextToken();
+
+                for (ServerThread serverThread : server.getConected()) {
+                    if (serverThread.getName().equals(rec) && serverThread.loggedin) {
+                        dos.writeUTF(this.name + " : " + msgToSend);
+                        break;
+                    }
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
             }
 
-            socket.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+    }
 
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public ServerMain getServer() {
+        return server;
+    }
+
+    public void setServer(ServerMain server) {
+        this.server = server;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

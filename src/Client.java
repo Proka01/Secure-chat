@@ -1,7 +1,5 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -9,7 +7,50 @@ public class Client {
 
     public Client() throws Exception
     {
-        Socket socket = new Socket("localhost",2022);
+        Scanner sc = new Scanner(System.in);
+
+        InetAddress ip = InetAddress.getByName("localhost");
+
+        Socket socket = new Socket(ip,2022);
+
+        DataInputStream dis = new DataInputStream(socket.getInputStream());
+        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+
+        Thread sendMessage = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true)
+                {
+                    String msg = sc.nextLine();
+
+                    try {
+                        dos.writeUTF(msg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        Thread readMessage = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true)
+                {
+                    try {
+                        String msg = dis.readUTF();
+                        System.out.println(msg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        sendMessage.start();
+        readMessage.start();
+
+        /*Socket socket = new Socket("localhost",2022);
         BufferedReader server_msg = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         PrintWriter client_msg = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
         Scanner sc = new Scanner(System.in);
@@ -28,7 +69,7 @@ public class Client {
             else if(msg.equals("end"))break;
         }
 
-        socket.close();
+        socket.close();*/
     }
 
     public static void main(String[] args) {
