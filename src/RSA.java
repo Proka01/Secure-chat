@@ -62,4 +62,16 @@ public class RSA {
     public BigInteger getE() {
         return e;
     }
+
+    public void setN(BigInteger n) {
+        this.n = n;
+    }
+
+    public void setE(BigInteger e) {
+        this.e = e;
+    }
+
+    public void setD(BigInteger d) {
+        this.d = d;
+    }
 }

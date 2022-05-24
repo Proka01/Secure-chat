@@ -41,7 +41,7 @@ public class ServerThread implements Runnable{
 
                 for (ServerThread serverThread : server.getConected()) {
                     if (serverThread.getName().equals(rec) && serverThread.loggedin) {
-                        serverThread.dos.writeUTF(this.name + " : " + msgToSend);
+                        serverThread.dos.writeUTF(this.name + ":" + msgToSend);
                         break;
                     }
                 }

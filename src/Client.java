@@ -1,4 +1,5 @@
 import java.io.*;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
@@ -12,7 +13,7 @@ public class Client {
         rsa = new RSA();
         Scanner sc = new Scanner(System.in);
 
-        InetAddress ip = InetAddress.getByName("192.168.0.29");
+        InetAddress ip = InetAddress.getByName("localhost");
 
         Socket socket = new Socket(ip,2022);
 
@@ -31,7 +32,8 @@ public class Client {
                 {
                     String msg = sc.nextLine();  // msg # client(i)
                     try {
-                        dos.writeUTF(msg);
+                        if(msg.contains("start"))dos.writeUTF(msg);
+                        else dos.writeUTF(rsa.encryptString(msg.split("#")[0]) + "#"+msg.split("#")[1]);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -48,7 +50,21 @@ public class Client {
                         String msg = dis.readUTF();
                         System.out.println(msg);
 
-
+                        if(msg.contains("start")){
+                            String reciever = msg.split(":")[0];
+                            dos.writeUTF(rsa.getN()+";"+rsa.getE()+"#"+reciever);
+                            System.out.println("slanje "+rsa.getN()+";"+rsa.getE()+"#"+reciever);
+                        }
+                        else if(msg.contains(";")){
+                            String split[] = msg.split("[:;#]");
+                            BigInteger reciever_n = new BigInteger(split[1]);
+                            BigInteger reciever_e = new BigInteger(split[2]);
+                            rsa.setN(reciever_n);
+                            rsa.setE(reciever_e);
+                        }
+                        else{
+                            System.out.println(rsa.decryptString(msg.split(":")[1]));
+                        }
 
                     } catch (IOException e) {
                         e.printStackTrace();
