@@ -30,8 +30,8 @@ public class ServerThread implements Runnable{
                 System.out.println(msg);
 
                 if (msg.equals("logout")) {
-                    loggedin = false;
-                    socket.close();
+                    this.loggedin = false;
+                    this.socket.close();
                     break;
                 }
 
@@ -41,7 +41,7 @@ public class ServerThread implements Runnable{
 
                 for (ServerThread serverThread : server.getConected()) {
                     if (serverThread.getName().equals(rec) && serverThread.loggedin) {
-                        dos.writeUTF(this.name + " : " + msgToSend);
+                        serverThread.dos.writeUTF(this.name + " : " + msgToSend);
                         break;
                     }
                 }
